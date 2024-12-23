@@ -4,9 +4,7 @@
 
 本人在去年五子棋的开发经验下，其中在主要架构设计完成之后，借助最近有点热度的Cursor编辑器的AI完成机械的代码书写加快了流程，并花费2.5天完成
 
-![]([chess-preview.png (1250×394)](https://static.longfish.site/passage/img/chess-preview.png))
-
-
+![](https://static.longfish.site/passage/img/chess-preview.png)
 
 - 服务端运行
 
