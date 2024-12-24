@@ -3,6 +3,7 @@ package com.longfish.client;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import java.awt.event.WindowEvent;
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -125,7 +126,24 @@ public class MenuClient extends JFrame {
             // 添加点击监听器
             int finalI = i;
             MouseAdapter clickListener = new MouseAdapter() {
-                public void mouseClicked(java.awt.event.MouseEvent evt) {
+                private boolean isMouseInside = false;
+                @Override
+                public void mousePressed(MouseEvent evt) {
+                    isMouseInside = true;
+                }
+                @Override
+                public void mouseReleased(MouseEvent evt) {
+                    if (isMouseInside) handleClick();
+                }
+                @Override
+                public void mouseExited(MouseEvent evt) {
+                    isMouseInside = false;
+                }
+                @Override
+                public void mouseEntered(MouseEvent evt) {
+                    isMouseInside = true;
+                }
+                private void handleClick() {
                     // 如果有已选中的房间，先清除其边框
                     if (currentSelectedBorderPanel != null) {
                         currentSelectedBorderPanel.setBorder(null);

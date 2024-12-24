@@ -215,17 +215,14 @@ public class RemoteClient extends JFrame {
             validMoves = new boolean[boardHeight][boardSize];
             addMouseListener(new MouseAdapter() {
                 private Point pressPoint;
-
                 @Override
                 public void mousePressed(MouseEvent e) {
                     pressPoint = e.getPoint();
                 }
-
                 @Override
                 public void mouseReleased(MouseEvent e) {
                     Point releasePoint = e.getPoint();
                     double distance = pressPoint.distance(releasePoint);
-
                     if (distance <= 25) {
                         handleMouseClick(e);
                     }
