@@ -20,10 +20,10 @@ import static com.longfish.CommonConstant.*;
 
 public class RemoteClient extends JFrame {
 
-    private static final int boardSize = 9;  // 棋盘宽度（列数）
+    private static final int boardWidth = 9;  // 棋盘宽度（列数）
     private static final int boardHeight = 10; // 棋盘高度（行数）
     private static final int cellSize = 60;    // 每个格子的大小
-    private static final int boardSizeX = boardSize * cellSize; // 棋盘总宽度
+    private static final int boardSizeX = boardWidth * cellSize; // 棋盘总宽度
     private static final int BoardSizeY = boardHeight * cellSize; // 棋盘总高度
     private static final String projectPath = RESOURCE_PATH;
 
@@ -201,7 +201,7 @@ public class RemoteClient extends JFrame {
         private final Image backgroundImage;
         private final Image selectImage;
         private final Image[][] piecesImages = new Image[2][7]; // 0: 红方, 1: 黑方
-        private final int[][] board = new int[boardHeight][boardSize]; // 棋盘状态
+        private final int[][] board = new int[boardHeight][boardWidth]; // 棋盘状态
         private Point selectedPiece = null; // 选中的棋子位置
         private boolean isRedTurn; // 当前下棋方
         private final boolean[][] validMoves; // 用于存储有效移动位置
@@ -212,23 +212,28 @@ public class RemoteClient extends JFrame {
             loadPieceImages();
             initializeBoard(isRed);
             isRedTurn = true;
-            validMoves = new boolean[boardHeight][boardSize];
+            validMoves = new boolean[boardHeight][boardWidth];
             addMouseListener(new MouseAdapter() {
-                private Point pressPoint;
+                private boolean isPressPointValid;
                 @Override
                 public void mousePressed(MouseEvent e) {
-                    pressPoint = e.getPoint();
+                    isPressPointValid = isPointInValidArea(e.getPoint());
                 }
                 @Override
                 public void mouseReleased(MouseEvent e) {
-                    Point releasePoint = e.getPoint();
-                    double distance = pressPoint.distance(releasePoint);
-                    if (distance <= 25) {
+                    if (isPressPointValid && isPointInValidArea(e.getPoint())) {
                         handleMouseClick(e);
                     }
                 }
             });
         }
+
+        private boolean isPointInValidArea(Point point) {
+            int col = (point.x - (int) ((cellSize - (cellSize * 0.9)) * 2.4)) / cellSize;
+            int row = (int) ((point.y - (cellSize - (cellSize * 0.9)) * 2) / cellSize);
+            return col >= 0 && col < boardWidth && row >= 0 && row < boardHeight;
+        }
+
 
         private void loadPieceImages() {
             for (int i = 0; i < 7; i++) {
@@ -295,7 +300,7 @@ public class RemoteClient extends JFrame {
             int col = (e.getX() - (int) ((cellSize - (cellSize * 0.9)) * 2.4)) / cellSize;
             int row = (int) ((e.getY() - (cellSize - (cellSize * 0.9)) * 2) / cellSize);
 
-            if (col >= 0 && col < boardSize && row >= 0 && row < boardHeight) {
+            if (col >= 0 && col < boardWidth && row >= 0 && row < boardHeight) {
                 if (selectedPiece == null) {
                     // 选择棋子
                     if (board[row][col] != 0 && isCurrentPlayerPiece(row, col)) {
@@ -381,7 +386,7 @@ public class RemoteClient extends JFrame {
             int piece = board[selectedPiece.y][selectedPiece.x];
             boolean isRedPiece = piece >= 1 && piece <= 7;
             for (int row = 0; row < boardHeight; row++) {
-                for (int col = 0; col < boardSize; col++) {
+                for (int col = 0; col < boardWidth; col++) {
                     if (ChessLogic.isValidMove(board, piece, selectedPiece.y, selectedPiece.x, row, col, isRed, isRedPiece, isRedTurn)) {
                         validMoves[row][col] = true;
                     }
@@ -391,7 +396,7 @@ public class RemoteClient extends JFrame {
 
         private void clearValidMoves() {
             for (int row = 0; row < boardHeight; row++) {
-                for (int col = 0; col < boardSize; col++) {
+                for (int col = 0; col < boardWidth; col++) {
                     validMoves[row][col] = false;
                 }
             }
@@ -421,7 +426,7 @@ public class RemoteClient extends JFrame {
             int offsetY = (cellSize - pieceSize) * 2; // 垂直中心对齐偏移
 
             for (int row = 0; row < boardHeight; row++) {
-                for (int col = 0; col < boardSize; col++) {
+                for (int col = 0; col < boardWidth; col++) {
                     int piece = board[row][col];
                     if (piece != 0) {
                         int player = (piece - 1) / 7; // 0: 红方, 1: 黑方
@@ -446,7 +451,7 @@ public class RemoteClient extends JFrame {
             g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON); // 启用抗锯齿
 
             for (int row = 0; row < boardHeight; row++) {
-                for (int col = 0; col < boardSize; col++) {
+                for (int col = 0; col < boardWidth; col++) {
                     if (validMoves[row][col]) {
                         int x = col * cellSize + (int) ((cellSize - (cellSize * 0.9)) * 2.2);
                         int y = (int) (row * cellSize + (cellSize - (cellSize * 0.9)) * 1.6);
