@@ -1,10 +1,8 @@
 package com.longfish.client;
 
 import com.longfish.ChessLogic;
+import com.longfish.Utility;
 
-import javax.sound.sampled.AudioInputStream;
-import javax.sound.sampled.AudioSystem;
-import javax.sound.sampled.Clip;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.MouseAdapter;
@@ -306,7 +304,7 @@ public class RemoteClient extends JFrame {
                     if (board[row][col] != 0 && isCurrentPlayerPiece(row, col)) {
                         selectedPiece = new Point(col, row);
                         calculateValidMoves(selectedPiece);
-                        playSound("select.wav");
+                        Utility.playSound("select.wav");
                     }
                 } else {
                     // 移动棋子
@@ -336,25 +334,13 @@ public class RemoteClient extends JFrame {
             available = !available;
 
             // 播放音效
-            if (ChessLogic.isInCheck(board, isRed, isRedTurn)) playSound("jiang.wav");
-            else playSound(eatFlag ? "eat.wav" : "go.wav");
+            if (ChessLogic.isInCheck(board, isRed, isRedTurn)) Utility.playSound("jiang.wav");
+            else Utility.playSound(eatFlag ? "eat.wav" : "go.wav");
 
             selectedPiece = null;
             clearValidMoves();
             repaint();
             updateButtonStates();
-        }
-
-        private void playSound(String soundFileName) {
-            try {
-                File soundFile = new File(projectPath + "audio\\" + soundFileName);
-                AudioInputStream audioStream = AudioSystem.getAudioInputStream(soundFile);
-                Clip clip = AudioSystem.getClip();
-                clip.open(audioStream);
-                clip.start();
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
         }
 
         // 添加悔棋功能

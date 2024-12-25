@@ -1,5 +1,7 @@
 package com.longfish.client;
 
+import com.longfish.Utility;
+
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.MouseAdapter;
@@ -153,6 +155,7 @@ public class MenuClient extends JFrame {
                     // 更新当前选中的房间
                     currentSelectedBorderPanel = borderPanel;
                     selectedRoom = finalI;
+                    Utility.playSound("select.wav");
                 }
             };
 
@@ -206,6 +209,8 @@ public class MenuClient extends JFrame {
                 Thread.sleep(100);
             } catch (InterruptedException ignored) {}
             myPosition = index;
+
+            Utility.playSound("seat.wav");
 
             new Thread(() ->
                     new RemoteClient(
